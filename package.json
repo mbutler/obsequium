@@ -1,0 +1,37 @@
+{
+  "name": "obsequium",
+  "version": "1.0.0",
+  "description": "WCAG 2.1 AA compliant static site generator for University of Iowa",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "npm run build:eleventy && npm run lint:ssg && npm run validate:html && npm run audit:a11y",
+    "build:eleventy": "eleventy",
+    "lint:ssg": "node ./lint/run-lint.js",
+    "validate:html": "node ./lint/validate-html.js",
+    "audit:a11y": "pa11y-ci",
+    "test:e2e": "playwright test",
+    "test": "npm run build && npm run test:e2e"
+  },
+  "keywords": [
+    "eleventy",
+    "wcag",
+    "accessibility",
+    "university-of-iowa",
+    "static-site-generator"
+  ],
+  "author": "University of Iowa Libraries",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@axe-core/playwright": "^4.7.0",
+    "@playwright/test": "^1.35.0",
+    "cheerio": "1.0.0-rc.10",
+    "glob": "^8.1.0",
+    "html-validate": "^7.18.0",
+    "pa11y-ci": "^3.0.1",
+    "vnu-jar": "^23.4.11"
+  },
+  "dependencies": {
+    "markdown-it": "^14.0.0"
+  }
+}

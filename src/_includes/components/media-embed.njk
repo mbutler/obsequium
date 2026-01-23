@@ -1,0 +1,41 @@
+{#
+  Media Embed Component
+  Per compliance spec §6.18
+  
+  Usage:
+  {% include "components/media-embed.njk" with {
+    provider: "youtube",
+    src: "https://www.youtube.com/embed/VIDEO_ID",
+    title: "Video title for accessibility",
+    transcriptHref: "/transcripts/video-transcript/",
+    captionsProvided: true
+  } %}
+  
+  WARNING: This component will cause a build FAILURE if:
+  - transcriptHref is not provided
+  - captionsProvided is false without an exception record
+#}
+
+<div class="media-embed" data-provider="{{ provider }}">
+  <div class="media-embed__wrapper">
+    <iframe 
+      src="{{ src }}"
+      title="{{ title }}"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+      loading="lazy"
+    ></iframe>
+  </div>
+  
+  <div class="media-embed__transcript">
+    {% if transcriptHref %}
+    <a href="{{ transcriptHref }}">View transcript</a>
+    {% if not captionsProvided %}
+    <span class="media-embed__notice"> (This video does not have captions)</span>
+    {% endif %}
+    {% else %}
+    {# Build should fail here - transcript is required #}
+    <!-- ERROR: Transcript link required for media embed -->
+    {% endif %}
+  </div>
+</div>

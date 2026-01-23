@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="{{ lang or site.lang or 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} | {{ site.unitFullName }}</title>
+  <meta name="description" content="{{ description }}">
+  
+  {# Favicon #}
+  {% if favicon %}
+  <link rel="icon" href="/favicon/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="/favicon/manifest.webmanifest">
+  {% endif %}
+  
+  {# Stylesheet #}
+  <link rel="stylesheet" href="/assets/css/main.css">
+  
+  {# Additional head content #}
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {# Skip Link - Required on every page #}
+  {% skipLink %}
+  
+  {# Brand Bar - Required on every page #}
+  {% brandBar site.unitName %}
+  
+  {# Site Navigation #}
+  {% if navigation %}
+  <nav class="site-nav" aria-label="Primary">
+    <div class="site-nav__inner">
+      <ul class="site-nav__list">
+        {% for item in navigation %}
+          <li class="site-nav__item">
+            {% if item.children %}
+              <button 
+                class="site-nav__toggle" 
+                aria-expanded="false" 
+                aria-controls="nav-dropdown-{{ loop.index }}"
+                id="nav-toggle-{{ loop.index }}"
+              >
+                {{ item.label }}
+                <svg class="site-nav__toggle-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 10l5 5 5-5z"/>
+                </svg>
+              </button>
+              <div 
+                class="site-nav__dropdown" 
+                id="nav-dropdown-{{ loop.index }}"
+                data-open="false"
+              >
+                <ul class="site-nav__dropdown-list">
+                  {% for child in item.children %}
+                    <li class="site-nav__dropdown-item">
+                      <a 
+                        href="{{ child.href }}" 
+                        class="site-nav__dropdown-link"
+                        {% if child.href == page.url %}aria-current="page"{% endif %}
+                      >
+                        {{ child.label }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% else %}
+              <a 
+                href="{{ item.href }}" 
+                class="site-nav__link"
+                {% if item.href == page.url %}aria-current="page"{% endif %}
+              >
+                {{ item.label }}
+              </a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
+  {% endif %}
+  
+  {# Main Content - Required landmark #}
+  <main id="main-content" class="main-content" tabindex="-1">
+    <div class="main-content__inner">
+      {# Breadcrumbs #}
+      {% if breadcrumbs %}
+        {% breadcrumbs breadcrumbs %}
+      {% endif %}
+      
+      {% block content %}
+        {{ content | safe }}
+      {% endblock %}
+    </div>
+  </main>
+  
+  {# Brand Footer - Required on every page #}
+  {% brandFooter site %}
+  
+  {# JavaScript - Progressive Enhancement Only #}
+  <script src="/assets/js/main.js" defer></script>
+  
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,43 @@
+{#
+  Accordion Component
+  Per compliance spec §6.11
+  
+  Usage:
+  {% include "components/accordion.njk" with {
+    id: "faq-accordion",
+    allowMultiple: false,
+    items: [
+      { id: "item-1", heading: "Question 1", content: "Answer 1" },
+      { id: "item-2", heading: "Question 2", content: "Answer 2" }
+    ]
+  } %}
+#}
+
+<div class="accordion" id="{{ id }}"{% if allowMultiple %} data-allow-multiple{% endif %}>
+  {% for item in items %}
+  <div class="accordion__item">
+    <h3>
+      <button 
+        class="accordion__header"
+        id="{{ item.id }}-header"
+        aria-expanded="false"
+        aria-controls="{{ item.id }}-panel"
+      >
+        <span>{{ item.heading }}</span>
+        <svg class="accordion__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M7 10l5 5 5-5z"/>
+        </svg>
+      </button>
+    </h3>
+    <div 
+      class="accordion__panel"
+      id="{{ item.id }}-panel"
+      role="region"
+      aria-labelledby="{{ item.id }}-header"
+      data-open="false"
+    >
+      {{ item.content | safe }}
+    </div>
+  </div>
+  {% endfor %}
+</div>

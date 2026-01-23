@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Accessibility Exception Record",
+  "description": "Machine-readable exception record per compliance spec §9.1",
+  "type": "object",
+  "required": [
+    "type",
+    "scope",
+    "rationale",
+    "owner",
+    "reviewBy",
+    "accommodation",
+    "approvalRef"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "archived",
+        "third-party",
+        "pre-existing-doc",
+        "alternate-version",
+        "other"
+      ],
+      "description": "Category of the exception"
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "URLs or URL patterns this exception applies to"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Explanation of why this exception is necessary"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Department or individual responsible for this exception"
+    },
+    "reviewBy": {
+      "type": "string",
+      "format": "date",
+      "description": "Date by which this exception must be reviewed (YYYY-MM-DD)"
+    },
+    "accommodation": {
+      "type": "string",
+      "minLength": 10,
+      "description": "How users can get an accessible alternative"
+    },
+    "approvalRef": {
+      "type": "string",
+      "description": "Ticket or approval identifier"
+    }
+  }
+}

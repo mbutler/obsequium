@@ -1,0 +1,45 @@
+{#
+  Tabs Component
+  Per compliance spec §6.13
+  
+  Usage:
+  {% include "components/tabs.njk" with {
+    id: "info-tabs",
+    tabs: [
+      { id: "tab-1", label: "Tab 1", content: "<p>Content 1</p>" },
+      { id: "tab-2", label: "Tab 2", content: "<p>Content 2</p>" }
+    ]
+  } %}
+#}
+
+<div class="tabs" id="{{ id }}">
+  <ul class="tabs__list" role="tablist" aria-label="{{ label or 'Content tabs' }}">
+    {% for tab in tabs %}
+    <li role="presentation">
+      <button 
+        class="tabs__tab"
+        id="{{ tab.id }}-tab"
+        role="tab"
+        aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+        aria-controls="{{ tab.id }}-panel"
+        tabindex="{% if loop.first %}0{% else %}-1{% endif %}"
+      >
+        {{ tab.label }}
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+  
+  {% for tab in tabs %}
+  <div 
+    class="tabs__panel"
+    id="{{ tab.id }}-panel"
+    role="tabpanel"
+    aria-labelledby="{{ tab.id }}-tab"
+    tabindex="0"
+    {% if loop.first %}data-active="true"{% endif %}
+  >
+    {{ tab.content | safe }}
+  </div>
+  {% endfor %}
+</div>

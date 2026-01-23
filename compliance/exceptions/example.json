@@ -1,0 +1,13 @@
+{
+  "$schema": "../exception-schema.json",
+  "$comment": "EXAMPLE ONLY - This is a template showing the required exception record format per §9.1",
+  "type": "third-party",
+  "scope": [
+    "/resources/databases/example-legacy-database/"
+  ],
+  "rationale": "Third-party database interface cannot be modified. Vendor has committed to WCAG compliance by Q3 2026.",
+  "owner": "Digital Scholarship Unit",
+  "reviewBy": "2026-09-01",
+  "accommodation": "Contact lib-accessibility@uiowa.edu for assisted database searching. Research librarians can perform searches on behalf of users.",
+  "approvalRef": "TICKET-2024-1234"
+}

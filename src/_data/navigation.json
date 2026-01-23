@@ -1,0 +1,37 @@
+[
+  {
+    "label": "Home",
+    "href": "/"
+  },
+  {
+    "label": "Resources",
+    "children": [
+      { "label": "Databases A-Z", "href": "/resources/databases/" },
+      { "label": "E-journals", "href": "/resources/e-journals/" },
+      { "label": "E-books", "href": "/resources/e-books/" },
+      { "label": "Guides by Subject", "href": "/resources/guides/" }
+    ]
+  },
+  {
+    "label": "Services",
+    "children": [
+      { "label": "Course Reserves", "href": "/services/course-reserves/" },
+      { "label": "Borrowing", "href": "/services/borrowing/" },
+      { "label": "Research Consultations", "href": "/services/research-consultations/" },
+      { "label": "Instructional Services", "href": "/services/instructional-services/" }
+    ]
+  },
+  {
+    "label": "Locations",
+    "href": "/locations/"
+  },
+  {
+    "label": "About",
+    "children": [
+      { "label": "About Us", "href": "/about/" },
+      { "label": "Contact", "href": "/about/contact/" },
+      { "label": "Hours", "href": "/about/hours/" },
+      { "label": "Accessibility", "href": "/accessibility-help/" }
+    ]
+  }
+]

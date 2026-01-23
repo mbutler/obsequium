@@ -1,0 +1,133 @@
+/**
+ * University of Iowa Design Tokens
+ * WCAG 2.1 AA Compliant + UIowa Brand
+ * 
+ * These tokens are the ONLY approved values for colors, typography, spacing.
+ * Do not use raw hex values in component CSS.
+ */
+
+:root {
+  /* ===== BRAND COLORS ===== */
+  --ui-gold: #FFCD00;
+  --ui-black: #000000;
+  --ui-white: #FFFFFF;
+  
+  /* Supported neutrals per brand guidance */
+  --ui-gray-10: #63666A;
+  --ui-gray-20: #939598;
+  --ui-gray-30: #BBBCBC;
+  --ui-gray-40: #D1D3D4;
+  --ui-gray-50: #F1F2F2;
+  
+  /* Accent blue - for focus states and links */
+  --ui-blue: #00558C;
+  
+  /* Semantic colors */
+  --color-success: #2E7D32;
+  --color-warning: #ED6C02;
+  --color-error: #D32F2F;
+  --color-info: var(--ui-blue);
+
+  /* ===== TYPOGRAPHY ===== */
+  --font-body: "Roboto", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-display: "Antonio", var(--font-body);
+  --font-accent: "Zilla Slab", Georgia, serif;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ===== SPACING ===== */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 1rem;      /* 16px */
+  --space-4: 1.5rem;    /* 24px */
+  --space-5: 2rem;      /* 32px */
+  --space-6: 3rem;      /* 48px */
+  --space-7: 4rem;      /* 64px */
+  --space-8: 6rem;      /* 96px */
+
+  /* ===== BORDERS & RADIUS ===== */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --radius-full: 9999px;
+
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+
+  /* ===== FOCUS STATES ===== */
+  --focus-outline: 3px solid var(--ui-blue);
+  --focus-outline-offset: 2px;
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* ===== TRANSITIONS ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* ===== Z-INDEX SCALE ===== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-tooltip: 500;
+  --z-skip-link: 1000;
+
+  /* ===== LAYOUT ===== */
+  --max-width-content: 70ch;
+  --max-width-wide: 1200px;
+  --max-width-full: 1400px;
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-normal: 0ms;
+    --transition-slow: 0ms;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== CONTRAST ENFORCEMENT ===== */
+/*
+ * BLOCKED COMBINATIONS (will fail lint):
+ * - Gold text (#FFCD00) on white background
+ * - White text (#FFFFFF) on gold background
+ * 
+ * APPROVED HIGH-CONTRAST COMBINATIONS:
+ * - Black on Gold: ✓ (contrast 12.6:1)
+ * - Black on White: ✓ (contrast 21:1)
+ * - White on Black: ✓ (contrast 21:1)
+ * - Gold on Black: ✓ (contrast 12.6:1)
+ * - Blue on White: ✓ (contrast 7.2:1)
+ * - White on Blue: ✓ (contrast 7.2:1)
+ */
