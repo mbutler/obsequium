@@ -52,6 +52,86 @@ obsequium/
 └── _site/               # Built output
 ```
 
+## Content and Sites
+
+Obsequium is intended to support both individual pages and multiple independent sites in the same repo. Author content in `src/` and treat `_site/` as build output only.
+
+### Demo content vs output
+
+`_site/` is always disposable build output and should never be edited or treated as source. The root `src/index.md` is a neutral starter page you can replace. If you want a demo or template site to reference, keep it under `src/` (see `src/demo-project/` with `about/` and `contact/` pages) and delete it when you no longer need it.
+
+### Add a single page
+
+Create a Markdown file in `src/` (or a subfolder) and include front matter:
+
+```md
+---
+layout: base.njk
+title: Example Page
+description: Short, descriptive summary.
+breadcrumbs:
+  - label: Home
+    href: /
+  - label: Example Page
+---
+
+{% pageHeader "Example Page", "Optional intro copy." %}
+
+## Section heading
+
+Your content here.
+```
+
+If you want a one-off page that does not use the global navigation, set `navigation: false` in front matter:
+
+```md
+---
+layout: base.njk
+title: One-off Page
+description: Short, descriptive summary.
+navigation: false
+---
+```
+
+### Add a standalone site (folder-scoped data)
+
+To keep unrelated content separate, create a folder with a directory data file that overrides `site` and `navigation` for that subtree:
+
+```
+src/sites/law/
+  law.json
+  index.md
+  admissions/
+    index.md
+```
+
+Example `src/sites/law/law.json`:
+
+```json
+{
+  "site": {
+    "unitName": "College of Law",
+    "unitFullName": "University of Iowa College of Law",
+    "lang": "en"
+  },
+  "navigation": [
+    { "label": "Home", "href": "/law/" },
+    { "label": "Admissions", "href": "/law/admissions/" }
+  ]
+}
+```
+
+All pages inside `src/sites/law/` inherit that site branding and navigation, without affecting other content.
+
+### Build and preview
+
+```bash
+npm run dev
+npm run build
+```
+
+Use the dev server to preview pages. Do not edit `_site/` directly.
+
 ## Build Pipeline
 
 The build process includes mandatory gates that will **fail the build** if not met:

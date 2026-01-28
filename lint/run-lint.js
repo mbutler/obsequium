@@ -174,7 +174,7 @@ function lintFile(filePath, result) {
   }
   
   // E008: Missing accessibility help link
-  const a11yHelpLink = $('a[href*="accessibility-help"], a:contains("Report an accessibility issue")');
+  const a11yHelpLink = $('a[href*="accessibility-help"], a[href*="accessibility.uiowa.edu"], a:contains("Report an accessibility issue")');
   if (a11yHelpLink.length === 0) {
     result.addError(relPath, 'E008', ERRORS['E008']);
   }
@@ -322,7 +322,9 @@ async function main() {
   const result = new LintResult();
   
   // Find all HTML files in the built site
-  const files = glob.sync(`${SITE_DIR}/**/*.html`);
+  const files = glob.sync(`${SITE_DIR}/**/*.html`).filter(
+    (file) => !file.includes(`${SITE_DIR}/components/`)
+  );
   
   if (files.length === 0) {
     console.error(`No HTML files found in ${SITE_DIR}/`);

@@ -1,0 +1,12 @@
+{
+  "site": {
+    "unitName": "Demo Project",
+    "unitFullName": "Obsequium Demo Project",
+    "lang": "en"
+  },
+  "navigation": [
+    { "label": "Home", "href": "/demo-project/" },
+    { "label": "About", "href": "/demo-project/about/" },
+    { "label": "Contact", "href": "/demo-project/contact/" }
+  ]
+}

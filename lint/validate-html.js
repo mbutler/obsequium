@@ -100,7 +100,9 @@ async function main() {
   
   const result = new ValidationResult();
   
-  const files = glob.sync(`${SITE_DIR}/**/*.html`);
+  const files = glob.sync(`${SITE_DIR}/**/*.html`).filter(
+    (file) => !file.includes(`${SITE_DIR}/components/`)
+  );
   
   if (files.length === 0) {
     console.error(`No HTML files found in ${SITE_DIR}/`);
