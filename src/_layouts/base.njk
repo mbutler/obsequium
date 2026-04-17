@@ -8,14 +8,14 @@
   
   {# Favicon #}
   {% if favicon %}
-  <link rel="icon" href="/favicon/favicon.ico" sizes="any">
-  <link rel="icon" href="/favicon/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/favicon/manifest.webmanifest">
+  <link rel="icon" href="{{ '/favicon/favicon.ico' | rel(page) }}" sizes="any">
+  <link rel="icon" href="{{ '/favicon/icon.svg' | rel(page) }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ '/favicon/apple-touch-icon.png' | rel(page) }}">
+  <link rel="manifest" href="{{ '/favicon/manifest.webmanifest' | rel(page) }}">
   {% endif %}
   
-  {# Stylesheet #}
-  <link rel="stylesheet" href="/assets/css/main.css">
+  {# Stylesheet: rel() keeps paths working when a site is packaged or nested under a path #}
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | rel(page) }}">
   
   {# Additional head content #}
   {% block head %}{% endblock %}
@@ -55,7 +55,7 @@
                   {% for child in item.children %}
                     <li class="site-nav__dropdown-item">
                       <a 
-                        href="{{ child.href }}" 
+                        href="{{ child.href | relUrl(page) }}" 
                         class="site-nav__dropdown-link"
                         {% if child.href == page.url %}aria-current="page"{% endif %}
                       >
@@ -67,7 +67,7 @@
               </div>
             {% else %}
               <a 
-                href="{{ item.href }}" 
+                href="{{ item.href | relUrl(page) }}" 
                 class="site-nav__link"
                 {% if item.href == page.url %}aria-current="page"{% endif %}
               >
@@ -99,7 +99,7 @@
   {% brandFooter site %}
   
   {# JavaScript - Progressive Enhancement Only #}
-  <script src="/assets/js/main.js" defer></script>
+  <script src="{{ '/assets/js/main.js' | rel(page) }}" defer></script>
   
   {% block scripts %}{% endblock %}
 </body>

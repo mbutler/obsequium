@@ -9,6 +9,8 @@
     "lint:ssg": "node ./lint/run-lint.js",
     "validate:html": "node ./lint/validate-html.js",
     "audit:a11y": "pa11y-ci",
+    "audit:axe": "node ./scripts/audit-a11y-html.js",
+    "package:site": "node ./scripts/package-site.js",
     "test:e2e": "playwright test",
     "test": "npm run build && npm run test:e2e"
   },

@@ -13,19 +13,27 @@ A static site generator built on Eleventy that outputs **WCAG 2.1 AA conformant*
 
 ## Quick Start
 
+[Bun](https://bun.sh) is the recommended toolchain for install and scripts (`bun install`, `bun run …`). **npm** (or **pnpm**) works the same way if you prefer—`package.json` scripts are unchanged.
+
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Run development server
-npm run dev
+bun run dev
 
 # Build for production (with all compliance checks)
-npm run build
+bun run build
 
-# Run accessibility tests
-npm run test:e2e
+# Run accessibility tests (see Testing — browsers must be installed once)
+bun run test:e2e
 ```
+
+### Tooling notes
+
+- **Day-to-day**: Bun for `install`, `dev`, and `build` is supported and fast; the build still runs Eleventy, the SSG linter, HTML validation, and pa11y-ci as defined in `package.json`.
+- **Playwright**: End-to-end tests expect browser binaries. After install, run **`bunx playwright install`** (or `npx playwright install`) once per machine or CI image. Playwright remains a Node-oriented runner; you can use Bun to invoke it without chasing a “Bun-only” stack.
+- **CI**: A practical pattern is Bun for dependency install + static build, with Node available when you need Playwright or other Node-native tooling.
 
 ## Project Structure
 
@@ -38,9 +46,13 @@ obsequium/
 │   ├── assets/
 │   │   ├── css/         # Stylesheets
 │   │   └── js/          # JavaScript (progressive enhancement)
-│   ├── components/      # Nunjucks component templates
-│   ├── tokens/          # Design tokens (CSS variables)
-│   └── *.md             # Content pages
+│   ├── components/      # Nunjucks component templates (also built as demo pages)
+│   ├── sites/           # Publishable sites (see sites.11tydata.js for URL mapping)
+│   │   ├── sites.11tydata.js
+│   │   ├── root/        # Home page at /
+│   │   └── ...          # One folder per site (e.g. demo-project, law)
+│   ├── favicon/         # Optional favicon assets (see root page front matter)
+│   └── tokens/          # Design tokens (CSS variables)
 ├── lint/
 │   ├── run-lint.js      # SSG-specific linter
 │   └── validate-html.js # HTML validation
@@ -54,15 +66,15 @@ obsequium/
 
 ## Content and Sites
 
-Obsequium is intended to support both individual pages and multiple independent sites in the same repo. Author content in `src/` and treat `_site/` as build output only.
+Obsequium is intended to support both individual pages and multiple independent sites in the same repo. Author site content under `src/sites/` (layouts, assets, and shared templates stay alongside it in `src/`) and treat `_site/` as build output only.
 
 ### Demo content vs output
 
-`_site/` is always disposable build output and should never be edited or treated as source. The root `src/index.md` is a neutral starter page you can replace. If you want a demo or template site to reference, keep it under `src/` (see `src/demo-project/` with `about/` and `contact/` pages) and delete it when you no longer need it.
+`_site/` is always disposable build output and should never be edited or treated as source. The site root home page lives at `src/sites/root/index.md` (published at `/`). If you want a demo or template site to reference, keep it under `src/sites/` (see `src/sites/demo-project/` with `about/` and `contact/` pages) and delete it when you no longer need it.
 
 ### Add a single page
 
-Create a Markdown file in `src/` (or a subfolder) and include front matter:
+Create a Markdown file under `src/sites/<your-site>/` (or add a new site folder there) and include front matter:
 
 ```md
 ---
@@ -123,24 +135,53 @@ Example `src/sites/law/law.json`:
 
 All pages inside `src/sites/law/` inherit that site branding and navigation, without affecting other content.
 
+Published URLs omit the `sites` segment: `src/sites/law/index.md` becomes `/law/`, not `/sites/law/`. That mapping lives in `src/sites/sites.11tydata.js`. The `root/` folder is special-cased so `src/sites/root/index.md` is the home page at `/`.
+
 ### Build and preview
 
 ```bash
-npm run dev
-npm run build
+bun run dev
+bun run build
 ```
 
 Use the dev server to preview pages. Do not edit `_site/` directly.
+
+### Publishing (avoid hand-picking files from `_site/`)
+
+Built HTML references shared **CSS, JS, and favicon** under `_site/assets/` and `_site/favicon/`. If you copy only a subfolder such as `_site/demo-project/`, those assets are missing and the site will look broken.
+
+**Option A — whole site (simplest)**  
+Upload **everything inside `_site/`** to your host’s document root. All paths keep working, including multiple sites under one domain (e.g. `/`, `/demo-project/`).
+
+**Option B — one site, one upload folder**  
+After a build, run:
+
+```bash
+bun run package:site demo-project
+```
+
+That creates **`dist/demo-project/`** with that site’s HTML **plus** `assets/` and `favicon/` (when present). Upload the **contents** of `dist/demo-project/` to the server root for that site.
+
+For the root home page only, use:
+
+```bash
+bun run package:site root
+```
+
+With **npm**, pass the slug after `--`: `npm run package:site -- demo-project`.
+
+**Navigation URLs:** Directory data (e.g. `demo-project.json`) often uses paths like `/demo-project/`. If you deploy the packaged folder at your **apex** domain, change those `href` values to `/`, `/about/`, etc., so the menu matches production. The packaging script does not rewrite links.
 
 ## Build Pipeline
 
 The build process includes mandatory gates that will **fail the build** if not met:
 
 1. **Compile** - Eleventy builds content → HTML
-2. **SSG Lint** - Custom rules for headings, landmarks, IDs, links, media
-3. **HTML Validation** - Standards-valid HTML
-4. **A11y Scan** - WCAG 2.1 AA automated scan (pa11y-ci with axe + htmlcs)
-5. **Route Audit** - Required routes exist (privacy, accessibility, etc.)
+2. **SSG Lint** - Custom rules for headings, landmarks, IDs, links, media, required footer URLs, and related checks (runs on built HTML under `_site/`, excluding `_site/components/` demo pages)
+3. **HTML Validation** - Standards-valid HTML (same exclusions as SSG lint)
+4. **A11y Scan** - pa11y-ci (configure target URLs so this scans your real routes; otherwise it may run zero pages)
+
+The linter enforces that each checked page includes the **required footer links** (privacy, nondiscrimination, accessibility, etc.). It does **not** require that you host local pages at paths such as `/privacy`—only that those destinations appear in the footer.
 
 ## Design Tokens
 
@@ -216,11 +257,35 @@ Place exception records in `/compliance/exceptions/`.
 ### Automated (every build)
 
 ```bash
-npm run lint:ssg        # Custom accessibility rules
-npm run validate:html   # HTML validation
-npm run audit:a11y      # pa11y-ci scan
-npm run test:e2e        # Playwright tests
+bun run lint:ssg        # Custom accessibility rules
+bun run validate:html   # HTML validation
+bun run audit:a11y      # pa11y-ci scan (add a pa11y-ci config if you need non-zero URL coverage)
+bun run audit:axe       # axe-core on every HTML file under _site/ (see below)
+bun run test:e2e        # Playwright tests (install browsers: bunx playwright install)
 ```
+
+Use `npm run …` instead of `bun run …` if you are not using Bun.
+
+### axe scan on built HTML (`audit:axe`)
+
+After `bun run build:eleventy` (or whenever you have a folder of static HTML), run:
+
+```bash
+bunx playwright install   # once per machine
+bun run audit:axe # defaults to ./_site
+```
+
+Scan another output folder (e.g. agent-generated HTML):
+
+```bash
+bun run audit:axe path/to/html-folder
+# or
+A11Y_HTML_DIR=dist/demo-project bun run audit:axe
+```
+
+Flags: `--warn` exits 0 even if violations exist (print only); `--json` prints structured results.
+
+This uses **axe** with WCAG 2.0/2.1 A and AA tags. It does **not** judge Iowa branding (colors/logotype rules are separate). Iterate: fix reported issues, re-run the script until clean or until remaining items are documented exceptions.
 
 ### Manual (before release)
 

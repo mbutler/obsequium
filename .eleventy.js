@@ -2,6 +2,64 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addPassthroughCopy({
+    "src/assets": "assets",
+    "src/favicon": "favicon",
+  });
+
+  /**
+   * Same-host absolute path (e.g. /demo-project/about/) → relative path to the built HTML file.
+   * Uses explicit index.html so opening from disk (file://) and simple servers don’t stop on a bare directory.
+   */
+  eleventyConfig.addNunjucksFilter("relUrl", function (targetAbs, page) {
+    if (typeof targetAbs !== "string" || !targetAbs.startsWith("/") || !page || typeof page.url !== "string") {
+      return targetAbs;
+    }
+
+    let fromBase;
+    if (page.url === "/" || page.url === "") {
+      fromBase = "/";
+    } else if (page.url.endsWith("/")) {
+      fromBase = page.url.replace(/\/+$/, "");
+    } else {
+      fromBase = page.url.replace(/\/[^/]+$/, "");
+    }
+
+    let toFile;
+    if (targetAbs === "/" || targetAbs === "") {
+      toFile = "/index.html";
+    } else {
+      const dir = targetAbs.replace(/\/+$/, "");
+      toFile = `${dir}/index.html`;
+    }
+
+    let rel = path.posix.relative(fromBase, toFile);
+    if (!rel || rel === ".") {
+      rel = "index.html";
+    }
+    if (!rel.startsWith(".")) {
+      rel = `./${rel}`;
+    }
+    return rel;
+  });
+
+  /** Root-absolute path (e.g. /assets/...) → relative to current page.url for portable deploys */
+  eleventyConfig.addNunjucksFilter("rel", function (absPath, page) {
+    if (typeof absPath !== "string" || !absPath.startsWith("/")) {
+      return absPath;
+    }
+    if (!page || typeof page.url !== "string") {
+      return absPath;
+    }
+    let dir = page.url;
+    if (!dir.endsWith("/")) {
+      dir = dir.slice(0, dir.lastIndexOf("/") + 1);
+    }
+    const depth = dir.split("/").filter(Boolean).length;
+    const dest = absPath.slice(1);
+    return (depth ? "../".repeat(depth) : "./") + dest;
+  });
+
   eleventyConfig.on("beforeBuild", () => {
     const outputPath = path.join(process.cwd(), "_site");
     if (fs.existsSync(outputPath)) {
